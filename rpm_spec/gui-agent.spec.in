@@ -31,7 +31,7 @@ Release:	1%{dist}
 Summary:	The Qubes GUI Agent for AppVMs
 
 Group:		Qubes
-Vendor:		Invisible Things Lab
+Vendor:	Invisible Things Lab
 License:	GPL
 URL:		http://www.qubes-os.org
 
@@ -39,25 +39,38 @@ URL:		http://www.qubes-os.org
 %define pa_ver_full %((pkg-config --modversion libpulse 2>/dev/null || echo 0.0) | cut -d "-" -f 1)
 %define pa_ver_major_minor %((pkg-config --modversion libpulse 2>/dev/null || echo 0.0) | cut -d "-" -f 1 | cut -d "." -f 1,2)
 
+%if 0%{?suse_version} == 1500 && 0%{?is_opensuse}
+BuildRequires:	libpulse-devel >= 0.9.21, libpulse-devel <= 13.99.1
+BuildRequires:	xorg-x11-devel
+%else
+BuildRequires:	pulseaudio-libs-devel >= 0.9.21, pulseaudio-libs-devel <= 13.99.1
+BuildRequires:	xorg-x11-server-devel
+%endif
 BuildRequires:	gcc
 BuildRequires:	libX11-devel
 BuildRequires:	libXcomposite-devel
 BuildRequires:	libXdamage-devel
 BuildRequires:	libXt-devel
 BuildRequires:	libtool-ltdl-devel
-BuildRequires:	pulseaudio-libs-devel >= 0.9.21, pulseaudio-libs-devel <= 13.99.1
-BuildRequires:	xorg-x11-server-devel
 BuildRequires:	pam-devel
 BuildRequires:	qubes-libvchan-@BACKEND_VMM@-devel
 BuildRequires:	qubes-gui-common-devel >= 3.2.0
 BuildRequires:	qubes-db-devel
-Requires:	Xorg %(xserver-sdk-abi-requires ansic)
-Requires:	Xorg %(xserver-sdk-abi-requires videodrv)
-Requires:	qubes-core-vm >= 3.0.14
-Requires:	xorg-x11-xinit
-Requires:	qubes-libvchan-@BACKEND_VMM@
+
+%if 0%{?suse_version} == 1500 && 0%{?is_opensuse}
+Requires:	xinit
+Requires:	xorg-x11-server
+Requires:	xorg-x11-server-extra
+Requires:	python3-xcffib
+%else
+Requires:   Xorg %(xserver-sdk-abi-requires ansic)
+Requires:   Xorg %(xserver-sdk-abi-requires videodrv)
+Requires:   xorg-x11-xinit
+Requires:	xorg-x11-server-Xorg
 Requires:	python%{python3_pkgversion}-xcffib
-Requires:   xorg-x11-server-Xorg
+%endif
+Requires:	qubes-core-vm >= 3.0.14
+Requires:	qubes-libvchan-@BACKEND_VMM@
 Provides:   qubes-gui-vm = %{version}-%{release}
 Obsoletes:  qubes-gui-vm < 4.0.0
 
@@ -88,7 +101,6 @@ Qubes fancy GUI.
 
 %prep
 %setup -q
-
 rm -f pulse/pulsecore
 ln -s pulsecore-%{pa_ver_full} pulse/pulsecore
 
@@ -103,40 +115,36 @@ make install install-xfce DESTDIR=$RPM_BUILD_ROOT \
                      LIBDIR=%{_libdir} \
                      DATADIR=%{_datadir} \
                      PA_VER_FULL=%{pa_ver_full}
-
 %post
 if [ -x /bin/systemctl ] && readlink /sbin/init | grep -q systemd; then
-    /bin/systemctl enable qubes-gui-agent.service 2> /dev/null
+	/bin/systemctl enable qubes-gui-agent.service 2> /dev/null
 fi
 
 %post -n pulseaudio-qubes
-
 sed -i '/^autospawn/d' /etc/pulse/client.conf
 echo autospawn=no >> /etc/pulse/client.conf
 
 %preun
-if [ "$1" = 0 ] ; then
+if [ "$1" = 0 ]; then
 	chkconfig qubes-gui-agent off
-    [ -x /bin/systemctl ] && /bin/systemctl disable qubes-gui-agent.service
-    /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
+	[ -x /bin/systemctl ] && /bin/systemctl disable qubes-gui-agent.service
+	/usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 fi
 
 %posttrans
-    /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
+/usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 if [ -d '/etc/init.d' ] && ! [ "$(ls -A /etc/init.d/ 2> /dev/null)" ]; then
-    rmdir /etc/init.d
+	rmdir /etc/init.d
 fi
 
 %triggerin -n pulseaudio-qubes -- pulseaudio-libs
-
 sed -i '/^autospawn/d' /etc/pulse/client.conf
 echo autospawn=no >> /etc/pulse/client.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 rm -f %{name}-%{version}
-
 
 %files
 %defattr(-,root,root,-)

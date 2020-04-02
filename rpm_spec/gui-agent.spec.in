@@ -25,15 +25,15 @@
 
 # default value in case of no qubes-builder's one
 
-Name:		qubes-gui-agent
-Version:	@VERSION@
-Release:	1%{dist}
-Summary:	The Qubes GUI Agent for AppVMs
+Name:           qubes-gui-agent
+Version:        @VERSION@
+Release:        1%{dist}
+Summary:        The Qubes GUI Agent for AppVMs
 
-Group:		Qubes
-Vendor:	Invisible Things Lab
-License:	GPL
-URL:		http://www.qubes-os.org
+Group:          Qubes
+Vendor:         Invisible Things Lab
+License:        GPL
+URL:            http://www.qubes-os.org
 
 
 %define pa_ver_full %((pkg-config --modversion libpulse 2>/dev/null || echo 0.0) | cut -d "-" -f 1)
@@ -58,10 +58,10 @@ BuildRequires:	qubes-gui-common-devel >= 3.2.0
 BuildRequires:	qubes-db-devel
 
 %if 0%{?suse_version} == 1500 && 0%{?is_opensuse}
-Requires:	xinit
-Requires:	xorg-x11-server
-Requires:	xorg-x11-server-extra
-Requires:	python3-xcffib
+Requires:       xinit
+Requires:       xorg-x11-server
+Requires:       xorg-x11-server-extra
+Requires:       python3-xcffib
 %else
 Requires:   Xorg %(xserver-sdk-abi-requires ansic)
 Requires:   Xorg %(xserver-sdk-abi-requires videodrv)
@@ -74,7 +74,7 @@ Requires:	qubes-libvchan-@BACKEND_VMM@
 Provides:   qubes-gui-vm = %{version}-%{release}
 Obsoletes:  qubes-gui-vm < 4.0.0
 
-Source0: %{name}-%{version}.tar.gz
+Source0:        %{name}-%{version}.tar.gz
 
 %package -n pulseaudio-qubes
 Summary: Audio support for Qubes VM
@@ -90,7 +90,7 @@ Conflicts:  qubes-gui-vm < 4.0.0
 Pulseaudio module to enable sound support in Qubes VM
 
 %package xfce
-Summary: XFCE desktop support for Qubes VM
+Summary:        XFCE desktop support for Qubes VM
 
 %description xfce
 XFCE desktop support for Qubes VM
@@ -117,7 +117,7 @@ make install install-xfce DESTDIR=$RPM_BUILD_ROOT \
                      PA_VER_FULL=%{pa_ver_full}
 %post
 if [ -x /bin/systemctl ] && readlink /sbin/init | grep -q systemd; then
-	/bin/systemctl enable qubes-gui-agent.service 2> /dev/null
+    /bin/systemctl enable qubes-gui-agent.service 2> /dev/null
 fi
 
 %post -n pulseaudio-qubes
@@ -126,16 +126,16 @@ echo autospawn=no >> /etc/pulse/client.conf
 
 %preun
 if [ "$1" = 0 ]; then
-	chkconfig qubes-gui-agent off
-	[ -x /bin/systemctl ] && /bin/systemctl disable qubes-gui-agent.service
-	/usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
+    chkconfig qubes-gui-agent off
+    [ -x /bin/systemctl ] && /bin/systemctl disable qubes-gui-agent.service
+    /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 fi
 
 %posttrans
 /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 if [ -d '/etc/init.d' ] && ! [ "$(ls -A /etc/init.d/ 2> /dev/null)" ]; then
-	rmdir /etc/init.d
+    rmdir /etc/init.d
 fi
 
 %triggerin -n pulseaudio-qubes -- pulseaudio-libs

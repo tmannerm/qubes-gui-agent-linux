@@ -26,7 +26,7 @@ DIST_DOM0 ?= fc13
 
 LIBDIR ?= /usr/lib64
 USRLIBDIR ?= /usr/lib
-SYSLIBDIR ?= /lib
+SYSLIBDIR ?= /usr/lib
 DATADIR ?= /usr/share
 PA_VER_FULL ?= $(shell pkg-config --modversion libpulse | cut -d "-" -f 1 || echo 0.0)
 PA_VER_MAJOR_MINOR ?= $(shell echo $(PA_VER_FULL) | cut -d "." -f 1,2)

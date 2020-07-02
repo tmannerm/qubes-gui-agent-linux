@@ -42,6 +42,7 @@ URL:            http://www.qubes-os.org
 %if 0%{?suse_version} == 1500 && 0%{?is_opensuse}
 BuildRequires:	libpulse-devel >= 0.9.21, libpulse-devel <= 13.99.1
 BuildRequires:	xorg-x11-devel
+BuildRequires:	xorg-x11-server-sdk
 %else
 BuildRequires:	pulseaudio-libs-devel >= 0.9.21, pulseaudio-libs-devel <= 13.99.1
 BuildRequires:	xorg-x11-server-devel
@@ -66,11 +67,12 @@ Requires:       python3-xcffib
 Requires:   Xorg %(xserver-sdk-abi-requires ansic)
 Requires:   Xorg %(xserver-sdk-abi-requires videodrv)
 Requires:   xorg-x11-xinit
-Requires:	xorg-x11-server-Xorg
-Requires:	python%{python3_pkgversion}-xcffib
+Requires:   xorg-x11-server-Xorg
+Requires:   python%{python3_pkgversion}-xcffib
 %endif
-Requires:	qubes-core-vm >= 3.0.14
-Requires:	qubes-libvchan-@BACKEND_VMM@
+Requires:   systemd
+Requires:   qubes-core-vm >= 3.0.14
+Requires:   qubes-libvchan-@BACKEND_VMM@
 Provides:   qubes-gui-vm = %{version}-%{release}
 Obsoletes:  qubes-gui-vm < 4.0.0
 

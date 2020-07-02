@@ -54,6 +54,7 @@ BuildRequires:	libXdamage-devel
 BuildRequires:	libXt-devel
 BuildRequires:	libtool-ltdl-devel
 BuildRequires:	pam-devel
+BuildRequires:	systemd
 BuildRequires:	qubes-libvchan-@BACKEND_VMM@-devel
 BuildRequires:	qubes-gui-common-devel >= 3.2.0
 BuildRequires:	qubes-db-devel
@@ -70,7 +71,6 @@ Requires:   xorg-x11-xinit
 Requires:   xorg-x11-server-Xorg
 Requires:   python%{python3_pkgversion}-xcffib
 %endif
-Requires:   systemd
 Requires:   qubes-core-vm >= 3.0.14
 Requires:   qubes-libvchan-@BACKEND_VMM@
 Provides:   qubes-gui-vm = %{version}-%{release}

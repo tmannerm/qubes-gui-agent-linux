@@ -121,6 +121,10 @@ make install install-xfce DESTDIR=$RPM_BUILD_ROOT \
 if [ -x /bin/systemctl ] && readlink /sbin/init | grep -q systemd; then
     /bin/systemctl enable qubes-gui-agent.service 2> /dev/null
 fi
+# Update alternatives setting for default X session on SUSE
+%if 0%{?suse_version} == 1500 && 0%{?is_opensuse}
+/usr/sbin/update-alternatives --install /usr/share/xsessions/default.desktop default-xsession.desktop /usr/share/xsessions/qubes.desktop 50
+%endif
 
 %post -n pulseaudio-qubes
 sed -i '/^autospawn/d' /etc/pulse/client.conf
@@ -131,6 +135,10 @@ if [ "$1" = 0 ]; then
     chkconfig qubes-gui-agent off
     [ -x /bin/systemctl ] && /bin/systemctl disable qubes-gui-agent.service
     /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
+    # Remove alternatives setting for default X session on SUSE
+    %if 0%{?suse_version} == 1500 && 0%{?is_opensuse}
+    [ -f /usr/share/xsessions/qubes.desktop ] || /usr/sbin/update-alternatives --remove default-xsession.desktop /usr/share/xsessions.qubes.desktop
+    %endif
 fi
 
 %posttrans
@@ -169,7 +177,11 @@ rm -f %{name}-%{version}
 /etc/X11/xinit/xinitrc.d/20qt-x11-no-mitshm.sh
 /etc/X11/xinit/xinitrc.d/20qt-gnome-desktop-session-id.sh
 /etc/qubes-rpc/qubes.SetMonitorLayout
+%if 0%{?suse_version} == 1500 && 0%{?is_opensuse}
+/usr/share/xsessions/qubes.desktop
+%else
 %config /etc/sysconfig/desktop
+%endif
 /etc/sysconfig/modules/qubes-u2mfn.modules
 %{_unitdir}/qubes-gui-agent.service
 /usr/lib/udev/rules.d/70-master-of-seat.rules

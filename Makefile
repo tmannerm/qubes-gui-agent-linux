@@ -89,8 +89,13 @@ install: install-rh-agent install-pulseaudio
 install-rh-agent: appvm install-common
 	install -m 0644 -D appvm-scripts/qubes-gui-agent.service \
 		$(DESTDIR)/$(SYSLIBDIR)/systemd/system/qubes-gui-agent.service
+ifeq ($(shell lsb_release -is), openSUSE)
+	install -m 0644 -D appvm-scripts/usr/share/xsessions/qubes.desktop.opensuse \
+		$(DESTDIR)/usr/share/xsessions/qubes.desktop
+else
 	install -m 0644 -D appvm-scripts/etc/sysconfig/desktop \
 		$(DESTDIR)/etc/sysconfig/desktop
+endif
 	install -D appvm-scripts/etc/sysconfig/modules/qubes-u2mfn.modules \
 		$(DESTDIR)/etc/sysconfig/modules/qubes-u2mfn.modules
 	install -m 0755 -D appvm-scripts/etc/X11/xinit/xinitrc.d/qubes-keymap.sh \

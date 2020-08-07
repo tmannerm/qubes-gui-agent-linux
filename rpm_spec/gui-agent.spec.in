@@ -64,6 +64,8 @@ Requires:       xinit
 Requires:       xorg-x11-server
 Requires:       xorg-x11-server-extra
 Requires:       python3-xcffib
+# for qubes.SetMonitorLayout
+Requires:       xrandr
 %else
 Requires:   Xorg %(xserver-sdk-abi-requires ansic)
 Requires:   Xorg %(xserver-sdk-abi-requires videodrv)

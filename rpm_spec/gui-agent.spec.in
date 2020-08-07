@@ -72,6 +72,8 @@ Requires:       xlsfonts
 Requires:       xprop
 Requires:       xvinfo
 Requires:       xwininfo
+# for qubes.SetMonitorLayout
+Requires:       xrandr
 %else
 Requires:       Xorg %(xserver-sdk-abi-requires ansic)
 Requires:       Xorg %(xserver-sdk-abi-requires videodrv)

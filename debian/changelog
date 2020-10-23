@@ -1,3 +1,85 @@
+qubes-gui-agent (4.1.12-1) unstable; urgency=medium
+
+  [ Matt McCutchen ]
+  * module-vchan-sink: link up the card properly
+
+  [ Frédéric Pierret (fepitre) ]
+  * pulseaudio: allow bluetooth devices like headphones
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 10 Oct 2020 04:20:24 +0200
+
+qubes-gui-agent (4.1.11-1) unstable; urgency=medium
+
+  [ Paweł Marczewski ]
+  * Extract Xephyr to a separate script
+
+  [ Marek Marczykowski-Górecki ]
+  * guivm: clean qrexec-service related environment in GUI session
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 06 Aug 2020 05:34:20 +0200
+
+qubes-gui-agent (4.1.10-1) unstable; urgency=medium
+
+  [ Marta Marczykowska-Górecka ]
+  * Modified keyboard layout handling
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 16 Jul 2020 06:12:58 +0200
+
+qubes-gui-agent (4.1.9-1) unstable; urgency=medium
+
+  [ Dmitry Fedorov ]
+  * conditionally use qubesdb dependency in vchan-sink module
+
+  [ Olivier MEDOC ]
+  * archlinux: set dependencies on xorg server ABI version instead of
+    the server version itself
+
+  [ Artur Puzio ]
+  * Disable gui-agent on sys-gui-gpu
+
+  [ deathgrippin ]
+  * Condense conditional
+
+  [ Rusty Bird ]
+  * vmside: use XKillClient() if WM_DELETE_WINDOW is unsupported
+
+  [ Frédéric Pierret (fepitre) ]
+  * qubes-run-xephyr: debian has another path for shmoverride.so
+  * Makefile: add clean of pkgs and debian changelog.*
+  * debian: add xfce subpackage for VM
+  * Check if shmoverride.so exists directly
+  * debian: fix conflict with newer location of pulseaudio conf
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 29 Jun 2020 05:31:38 +0200
+
+qubes-gui-agent (4.1.8-1) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * pulse: fix pa_proplist_set[fs] usage
+
+  [ Ivan Kardykov ]
+  * fix typo
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 21 May 2020 02:51:19 +0200
+
+qubes-gui-agent (4.1.7-1) unstable; urgency=medium
+
+  [ Paweł Marczewski ]
+  * pulseaudio: support reconnecting
+  * pulseaudio 13.99.1
+  * pulseaudio 13.99.1: add internal headers
+  * Bump ICON_MAX_SIZE
+
+  [ Yukikoo ]
+  * Archlinux: more permissive with xorg-server update
+
+  [ Paweł Marczewski ]
+  * icon-sender: reconnect on failure
+  * Send MSG_CURSOR
+  * Check protocol version defined in qubes-gui-protocol.h
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 10 Apr 2020 05:57:53 +0200
+
 qubes-gui-agent (4.1.6-1) unstable; urgency=medium
 
   [ Neowutran ]

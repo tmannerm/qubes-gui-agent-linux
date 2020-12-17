@@ -166,7 +166,14 @@ if [ -d '/etc/init.d' ] && ! [ "$(ls -A /etc/init.d/ 2> /dev/null)" ]; then
     rmdir /etc/init.d
 fi
 
-%triggerin -n pulseaudio-qubes -- pulseaudio-libs
+# Pulseaudio library package is named differently on openSUSE
+%if 0%{?suse_version} == 1500
+%define pulselibs_pkg_name libpulse0
+%else
+%define pulselibs_pkg_name pulseaudio-libs
+%endif
+
+%triggerin -n pulseaudio-qubes -- %{pulselibs_pkg_name}
 sed -i '/^autospawn/d' /etc/pulse/client.conf
 echo autospawn=no >> /etc/pulse/client.conf
 

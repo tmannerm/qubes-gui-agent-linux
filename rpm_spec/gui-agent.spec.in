@@ -45,49 +45,32 @@ BuildRequires:  libXfixes-devel
 BuildRequires:  libXt-devel
 BuildRequires:  libtool-ltdl-devel
 %if 0%{?suse_version} >= 1500
-BuildRequires:  libpulse-devel >= 0.9.21, libpulse-devel <= 13.99.2
+BuildRequires:  libpulse-devel >= 0.9.21, libpulse-devel <= 14.0
 BuildRequires:  xorg-x11-devel
 BuildRequires:  xorg-x11-server-sdk
 %else
-BuildRequires:  pulseaudio-libs-devel >= 0.9.21, pulseaudio-libs-devel <= 13.99.2
+BuildRequires:	pulseaudio-libs-devel >= 0.9.21, pulseaudio-libs-devel <= 14.0
 BuildRequires:  xorg-x11-server-devel
 %endif
 BuildRequires:  pam-devel
-BuildRequires:  systemd
-BuildRequires:  qubes-libvchan-@BACKEND_VMM@-devel
+BuildRequires:  qubes-libvchan-devel
 BuildRequires:  qubes-gui-common-devel >= 4.1.0
 BuildRequires:  qubes-db-devel
 BuildRequires:  xen-devel
 %if 0%{?suse_version} >= 1500
-Requires:       xinit
 Requires:       xorg-x11-server
-Requires:       xorg-x11-server-extra
-Requires:       python3-xcffib
 Requires:       libXfixes3
-# In openSUSE Xorg utils are in separate packages
-# TODO Figure out what utils qubes really uses and include only those
-Requires:       xdpyinfo
-Requires:       xev
-Requires:       xlsatoms
-Requires:       xlsclients
-Requires:       xlsfonts
-Requires:       xprop
-Requires:       xvinfo
-Requires:       xwininfo
+Requires:       xinit
 # for qubes.SetMonitorLayout
 Requires:       xrandr
 %else
 Requires:       Xorg %(xserver-sdk-abi-requires ansic)
 Requires:       Xorg %(xserver-sdk-abi-requires videodrv)
-Requires:       xorg-x11-xinit
-Requires:       xorg-x11-server-Xorg
-Requires:       xorg-x11-server-Xephyr
-Requires:       python%{python3_pkgversion}-xcffib
-Requires:       xorg-x11-utils
 Requires:       libXfixes
+Requires:       xorg-x11-xinit
 %endif
 Requires:       qubes-core-vm >= 3.0.14
-Requires:       qubes-libvchan-@BACKEND_VMM@
+Requires:       qubes-libvchan
 # qubesdb-read --wait option
 Requires:       qubes-db >= 4.1.4
 Provides:       qubes-gui-vm = %{version}-%{release}
@@ -126,7 +109,7 @@ ln -s pulsecore-%{pa_ver_full} pulse/pulsecore
 %build
 %{?set_build_flags}
 #make clean
-make BACKEND_VMM=@BACKEND_VMM@ appvm
+make appvm
 
 %install
 rm -rf $RPM_BUILD_ROOT

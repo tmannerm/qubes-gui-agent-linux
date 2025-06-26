@@ -43,7 +43,7 @@ URL:		https://www.qubes-os.org
 %endif
 %define pa_ver_full %((pkg-config --modversion libpulse 2>/dev/null || echo 0.0) | cut -d "-" -f 1)
 %define pa_module_dir %(pkg-config --variable=modlibexecdir libpulse)
-%if 0%{?is_opensuse}
+%if 0%{?is_opensuse} && 0%{?suse_version} > 1600
 %define xinitrc_dir /usr/etc/X11/xinit/xinitrc.d
 %define limits_dir /usr/etc/security/limits.d
 %else
@@ -61,8 +61,9 @@ BuildRequires:	libtool-ltdl-devel
 BuildRequires:	libtool
 %if 0%{?is_opensuse}
 BuildRequires:	libpulse-devel >= 0.9.21
-BuildRequires:	libpulse-devel <= 16.99.1
+BuildRequires:	libpulse-devel <= 17.0
 BuildRequires:	xorg-x11-server-sdk
+BuildRequires:	pkgconfig(xf86dgaproto)
 BuildRequires:	libgbm-devel
 %else
 BuildRequires:	pulseaudio-libs-devel >= 0.9.21, pulseaudio-libs-devel <= 17.0
@@ -80,17 +81,23 @@ BuildRequires:	systemd-rpm-macros
 BuildRequires:  xinit
 BuildRequires:	qubes-core-qrexec
 BuildRequires:	qubes-core-agent
-Requires(post): %fillup_prereq
 %endif
+Requires:	qubes-core-vm >= 3.0.14
+%if 0%{?is_opensuse}
+Requires:	xinit
+Requires:	xorg-x11-server %{?x11_abi_ansic_req} %{?x11_abi_videodrv_req}
+# rpmspec query on Fedora host fails with this
+#Requires(post): %fillup_prereq
+%else
+Requires:	xorg-x11-xinit
 Requires:	Xorg %(xserver-sdk-abi-requires ansic)
 Requires:	Xorg %(xserver-sdk-abi-requires videodrv)
-Requires:	qubes-core-vm >= 3.0.14
-Requires:	xorg-x11-xinit
+Requires:	xorg-x11-server-Xorg
+Requires:	xorg-x11-server-Xephyr
+%endif
 # qubesdb-read --wait option
 Requires:	qubes-db >= 4.1.4
 Requires:	python%{python3_pkgversion}-xcffib
-Requires:   xorg-x11-server-Xorg
-Requires:   xorg-x11-server-Xephyr
 %if 0%{?fedora} >= 41
 Requires:   cvt
 %endif
@@ -197,8 +204,10 @@ make install "DESTDIR=$RPM_BUILD_ROOT" \
                      UDEVRULESDIR=%{_udevrulesdir}
 
 %if 0%{?is_opensuse}
+%if 0%{?suse_version} > 1600
 mkdir -p $RPM_BUILD_ROOT/usr/lib/pam.d
 mv $RPM_BUILD_ROOT/etc/pam.d/* $RPM_BUILD_ROOT/usr/lib/pam.d/
+%endif
 mkdir -p $RPM_BUILD_ROOT%{_fillupdir}
 mv $RPM_BUILD_ROOT/etc/sysconfig/desktop \
     $RPM_BUILD_ROOT%{_fillupdir}/desktop.qubes-gui-agent
@@ -274,8 +283,14 @@ if [ -d '/etc/init.d' ] && ! [ "$(ls -A /etc/init.d/ 2> /dev/null)" ]; then
     rmdir /etc/init.d
 fi
 
-%triggerin -n pulseaudio-qubes -- pulseaudio-libs
+# Pulseaudio library package is named differently on openSUSE
+%if 0%{?is_opensuse}
+%define pulselibs_pkg_name libpulse0
+%else
+%define pulselibs_pkg_name pulseaudio-libs
+%endif
 
+%triggerin -n pulseaudio-qubes -- %{pulselibs_pkg_name}
 sed -i '/^autospawn/d' /etc/pulse/client.conf
 echo autospawn=no >> /etc/pulse/client.conf
 
@@ -299,7 +314,7 @@ rm -f %{name}-%{version}
 %attr(0644,root,root) /etc/X11/xorg-qubes.conf.template
 /etc/profile.d/qubes-gui.sh
 /etc/profile.d/qubes-gui.csh
-%if 0%{?is_opensuse}
+%if 0%{?is_opensuse} && 0%{?suse_version} > 1600
 /usr/lib/pam.d/qubes-gui-agent
 %else
 %config /etc/pam.d/qubes-gui-agent

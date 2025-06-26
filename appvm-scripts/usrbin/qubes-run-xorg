@@ -83,7 +83,7 @@ chmod 770 /var/run/xf86-qubes-socket
 
 export XDG_SEAT=seat0 XDG_SESSION_CLASS=user DISPLAY=:0
 
-if [ -x /bin/loginctl ]; then
+if [ -x /usr/bin/loginctl ]; then
     # logind needs at least one device with "master-of-seat" tag to
     # consider this seat as graphical; we use pcspkr, for which we ship udev
     # rules adding that tag

@@ -247,6 +247,12 @@ else ifeq ($(shell lsb_release -is), Arch)
 else ifeq ($(shell lsb_release -is), Gentoo)
 	install -D -m 0644 appvm-scripts/etc/pam.d/qubes-gui-agent.gentoo \
 		$(DESTDIR)/etc/pam.d/qubes-gui-agent
+else ifneq (,$(findstring Leap, $(shell lsb_release -ds)))
+	install -D -m 0644 appvm-scripts/etc/pam.d/qubes-gui-agent.leap \
+		$(DESTDIR)/etc/pam.d/qubes-gui-agent
+else ifneq (,$(findstring Tumbleweed, $(shell lsb_release -ds)))
+	install -D -m 0644 appvm-scripts/etc/pam.d/qubes-gui-agent.tw \
+		$(DESTDIR)/etc/pam.d/qubes-gui-agent
 else
 	install -D -m 0644 appvm-scripts/etc/pam.d/qubes-gui-agent \
 		$(DESTDIR)/etc/pam.d/qubes-gui-agent
